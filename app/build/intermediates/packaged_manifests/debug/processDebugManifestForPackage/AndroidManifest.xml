@@ -23,7 +23,8 @@
         android:extractNativeLibs="false"
         android:label="Stock"
         android:supportsRtl="true"
-        android:theme="@android:style/Theme.DeviceDefault.NoActionBar" >
+        android:testOnly="true"
+        android:theme="@style/Theme.StockCompose" >
         <activity
             android:name="com.sergeapps.stock.MainActivity"
             android:exported="true" >

@@ -23,9 +23,14 @@ data class ItemsListUiState(
 )
 
 data class ItemRowUi(
+    val id: Int,
     val itemNumber: String,
-    val description: String
+    val description: String,
+    val vendor: String,
+    val manufacturer: String,
+    val imageUrl: String?
 )
+
 
 class ItemsListViewModel(app: Application) : AndroidViewModel(app) {
 
@@ -42,24 +47,53 @@ class ItemsListViewModel(app: Application) : AndroidViewModel(app) {
             val repo = StockRepository(api)
 
             runCatching {
-                val total = repo.loadItemsTotalPages(filter = uiState.value.filter.ifBlank { null })
-                val page = uiState.value.page.coerceIn(1, maxOf(1, total))
-                val items = repo.loadItemsPage(page = page, filter = uiState.value.filter.ifBlank { null })
-                uiState.value.copy(
-                    isLoading = false,
-                    totalPages = maxOf(1, total),
-                    page = page,
-                    items = items.map {
-                        ItemRowUi(
-                            itemNumber = it.itemNumber.orEmpty(),
-                            description = it.description.orEmpty()
-                        )
+                viewModelScope.launch {
+                    uiState.value = uiState.value.copy(isLoading = true, error = "Début refresh()")
+
+                    val settings = settingsStore.settingsFlow.first()
+                    val api = StockApiFactory.create(settings)
+                    val repo = StockRepository(api)
+
+                    val nbItems = 10
+                    val filter = uiState.value.filter.ifBlank { null }
+
+                    // 1) nbpagesitem
+                    val total = try {
+                        uiState.value = uiState.value.copy(error = "Appel nbpagesitem…")
+                        repo.loadItemsTotalPages(nbItems = nbItems, filter = filter)
+                    } catch (e: Exception) {
+                        uiState.value = uiState.value.copy(isLoading = false, error = "Erreur nbpagesitem: ${e.message}")
+                        return@launch
                     }
-                )
-            }.onSuccess { newState ->
-                uiState.value = newState
-            }.onFailure { e ->
-                uiState.value = uiState.value.copy(isLoading = false, error = e.message ?: "Erreur réseau")
+
+                    val currentPage = uiState.value.page.coerceIn(1, maxOf(1, total))
+
+                    // 2) itemlist
+                    val items = try {
+                        uiState.value = uiState.value.copy(error = "Appel itemlist…")
+                        repo.loadItemsPage(page = currentPage, nbItems = nbItems)
+                    } catch (e: Exception) {
+                        uiState.value = uiState.value.copy(isLoading = false, error = "Erreur itemlist: ${e.message}")
+                        return@launch
+                    }
+
+                    uiState.value = uiState.value.copy(
+                        isLoading = false,
+                        error = null,
+                        totalPages = maxOf(1, total),
+                        page = currentPage,
+                        items = items.map {
+                            ItemRowUi(
+                                id = it.id,
+                                itemNumber = it.itemNumber.toString(),
+                                description = it.description,
+                                vendor = it.vendor.orEmpty(),
+                                manufacturer = it.manufacturer.orEmpty(),
+                                imageUrl = it.url
+                            )
+                        }
+                    )
+                }
             }
         }
     }

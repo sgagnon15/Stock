@@ -21,11 +21,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sergeapps.stock.vm.ItemsListViewModel
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import coil.compose.AsyncImage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ItemsListScreen(
     onBack: () -> Unit,
+    onOpenItem: (Int) -> Unit,
     viewModel: ItemsListViewModel = viewModel()
 ) {
     val state by viewModel.state.collectAsState()
@@ -79,10 +83,58 @@ fun ItemsListScreen(
             } else {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     state.items.forEach { row ->
-                        Text("${row.itemNumber}  —  ${row.description}")
+                        ItemRow(
+                            itemId = row.id,
+                            itemNumber = row.itemNumber,
+                            description = row.description,
+                            vendor = row.vendor,
+                            manufacturer = row.manufacturer,
+                            imageUrl = row.imageUrl,
+                            onClick = onOpenItem
+                        )
                     }
                 }
             }
         }
     }
 }
+
+
+@Composable
+fun ItemRow(
+    itemId: Int,
+    itemNumber: String,
+    description: String,
+    vendor: String,
+    manufacturer: String,
+    imageUrl: String?,
+    onClick: (Int) -> Unit
+)  {
+    Card (
+        onClick = { onClick(itemId) }
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AsyncImage(
+                model = imageUrl,
+                contentDescription = null,
+                modifier = Modifier.size(56.dp)
+            )
+
+            Column(modifier = Modifier.weight(1f)) {
+                Text(text = "$itemNumber — $description", style = MaterialTheme.typography.titleMedium)
+                Text(
+                    text = listOf(vendor, manufacturer).filter { it.isNotBlank() }.joinToString(" • "),
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+        }
+    }
+}
+
+

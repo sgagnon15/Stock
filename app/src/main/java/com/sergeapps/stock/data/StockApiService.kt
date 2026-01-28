@@ -2,28 +2,52 @@ package com.sergeapps.stock.data
 
 import retrofit2.http.GET
 import retrofit2.http.Query
+import okhttp3.MultipartBody
+import okhttp3.ResponseBody
+import retrofit2.http.Multipart
+import retrofit2.http.POST
+import retrofit2.http.Part
+import retrofit2.http.Path
+import retrofit2.http.DELETE
+
 
 interface StockApiService {
 
-    // D'après le projet MIT Stock.aia:
-    // - /itemList?nbitems=9&orderby=description&pagenumber=
-    // - /nbpagesitem?nbitems=9&filter=
-    @GET("itemList")
+    @GET("itemlist")
     suspend fun getItemList(
-        @Query("nbitems") nbItems: Int = 9,
-        @Query("orderby") orderBy: String = "description",
         @Query("pagenumber") pageNumber: Int = 1,
-        @Query("filter") filter: String? = null
-    ): List<ItemSummaryDto>
+        @Query("orderby") orderBy: String = "description",
+        @Query("nbitems") nbItems: Int = 10
+    ): List<ItemListDto>
 
     @GET("nbpagesitem")
     suspend fun getNbPagesItem(
-        @Query("nbitems") nbItems: Int = 9,
-        @Query("filter") filter: String? = null,
-        @Query("searchstr") searchStr: String? = null
-    ): Int
+        @Query("nbitems") nbItems: Int = 10,
+        @Query("filter") filter: String? = null
+    ): NbPagesDto
 
-    // Exemple utilisé par Screen1: /info
-    @GET("info")
-    suspend fun getInfo(): Map<String, String>
+    @GET("itemdetail")
+    suspend fun getItemDetail(
+        @Query("id") id: Int
+    ): ItemDetailDto
+    @Multipart
+
+    @POST("items/{itemId}/photo")
+    suspend fun uploadItemPhoto(
+        @Path("itemId") itemId: Long,
+        @Part photo: MultipartBody.Part
+    ): ItemDetailDto
+
+    @Multipart
+    @POST("uploadpic")
+    suspend fun uploadPic(
+        @Query("id") id: Int,
+        @Part file: MultipartBody.Part
+    ): UploadPicResponseDto
+
+    @DELETE("picture")
+    suspend fun deletePicture(
+        @Query("id") id: Int,
+        @Query("url") url: String
+    ): DeletePictureResponseDto
 }

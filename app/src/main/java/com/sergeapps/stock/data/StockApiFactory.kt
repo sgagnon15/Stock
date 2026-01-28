@@ -8,6 +8,7 @@ import retrofit2.create
 import kotlinx.serialization.json.Json
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import okhttp3.MediaType.Companion.toMediaType
+import java.util.concurrent.TimeUnit
 
 object StockApiFactory {
 
@@ -16,12 +17,10 @@ object StockApiFactory {
     ): StockApiService {
         val normalizedBase = settings.baseUrl.trim().removeSuffix("/")
         val portPart = settings.port.trim().takeIf { it.isNotBlank() }?.let { ":$it" } ?: ""
-        val baseUrl = "$normalizedBase$portPart/"
-
+        val baseUrl = "$normalizedBase$portPart/api/stock/"
         val headerInterceptor = Interceptor { chain ->
             val original = chain.request()
             val builder = original.newBuilder()
-                .header("Content-Type", "application/json")
 
             if (settings.apiKey.isNotBlank()) {
                 builder.header("X-API-Key", settings.apiKey)
@@ -31,12 +30,15 @@ object StockApiFactory {
         }
 
         val logging = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BASIC
+            level = HttpLoggingInterceptor.Level.BODY
         }
 
         val client = OkHttpClient.Builder()
             .addInterceptor(headerInterceptor)
             .addInterceptor(logging)
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(10, TimeUnit.SECONDS)
+            .callTimeout(15, TimeUnit.SECONDS)
             .build()
 
         val json = Json {
@@ -54,3 +56,4 @@ object StockApiFactory {
             .create()
     }
 }
+

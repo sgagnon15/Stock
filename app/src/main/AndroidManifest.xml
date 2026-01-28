@@ -5,7 +5,8 @@
         android:allowBackup="true"
         android:label="Stock"
         android:supportsRtl="true"
-        android:theme="@android:style/Theme.DeviceDefault.NoActionBar">
+        android:theme="@style/Theme.StockCompose">
+
         <activity
             android:name=".MainActivity"
             android:exported="true">

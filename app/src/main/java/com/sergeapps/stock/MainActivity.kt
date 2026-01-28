@@ -3,17 +3,14 @@ package com.sergeapps.stock
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import com.sergeapps.stock.ui.theme.StockTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MaterialTheme {
-                Surface {
-                    StockApp()
-                }
+            StockTheme {
+                StockApp()
             }
         }
     }
