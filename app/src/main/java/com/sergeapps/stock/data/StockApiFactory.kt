@@ -1,5 +1,6 @@
 package com.sergeapps.stock.data
 
+import android.content.Context
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -57,3 +58,25 @@ object StockApiFactory {
     }
 }
 
+object StockImageLoaderFactory {
+
+    fun create(context: Context, apiKey: String): coil.ImageLoader {
+        val headerInterceptor = okhttp3.Interceptor { chain ->
+            val builder = chain.request().newBuilder()
+
+            if (apiKey.isNotBlank()) {
+                builder.header("X-API-Key", apiKey)
+            }
+
+            chain.proceed(builder.build())
+        }
+
+        val client = okhttp3.OkHttpClient.Builder()
+            .addInterceptor(headerInterceptor)
+            .build()
+
+        return coil.ImageLoader.Builder(context)
+            .okHttpClient(client)
+            .build()
+    }
+}

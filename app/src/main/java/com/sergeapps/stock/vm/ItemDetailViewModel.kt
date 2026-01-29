@@ -36,7 +36,9 @@ data class ItemDetailUiState(
 
     // --- PHOTO ---
     val localSelectedPhotoUri: Uri? = null,
-    val isUploadingPhoto: Boolean = false
+    val isUploadingPhoto: Boolean = false,
+    val photoVersion: Long = 0L,
+    val apiKey: String = ""
 )
 
 class ItemDetailViewModel(app: Application) : AndroidViewModel(app) {
@@ -50,7 +52,6 @@ class ItemDetailViewModel(app: Application) : AndroidViewModel(app) {
     fun load(itemId: Int) {
         viewModelScope.launch {
             uiState.value = ItemDetailUiState(isLoading = true)
-            uiState.value = ItemDetailUiState(isLoading = true, error = "load($itemId) appelé")
 
             val settings = settingsStore.settingsFlow.first()
             val api = StockApiFactory.create(settings)
@@ -72,7 +73,8 @@ class ItemDetailViewModel(app: Application) : AndroidViewModel(app) {
                     minLevel = dto.minLevel.orEmpty(),
                     maxLevel = dto.maxLevel.orEmpty(),
                     vendorUrl = dto.vendorUrl.orEmpty(),
-                    imageUrl = dto.url
+                    imageUrl = dto.url,
+                    apiKey = settings.apiKey
                 )
             }.onFailure { e ->
                 uiState.value = ItemDetailUiState(
@@ -95,19 +97,19 @@ class ItemDetailViewModel(app: Application) : AndroidViewModel(app) {
         val repo = repository ?: return
 
         viewModelScope.launch {
-            uiState.update { it.copy(isUploadingPhoto = true) }
+            uiState.update { it.copy(isUploadingPhoto = true, error = null) }
 
             runCatching {
                 repo.uploadPhoto(context, itemId, uri)
-            }.onSuccess { dto ->
-                val response = repo.uploadPhoto(context, itemId, uri)
-
+            }.onSuccess { response ->
                 if (response.ok && !response.url.isNullOrBlank()) {
                     uiState.update {
                         it.copy(
                             imageUrl = response.url,
                             localSelectedPhotoUri = null,
-                            isUploadingPhoto = false
+                            isUploadingPhoto = false,
+                            error = null,
+                            photoVersion = System.currentTimeMillis()
                         )
                     }
                 } else {
@@ -117,7 +119,8 @@ class ItemDetailViewModel(app: Application) : AndroidViewModel(app) {
                             error = response.error ?: "Upload échoué"
                         )
                     }
-                }            }.onFailure { e ->
+                }
+            }.onFailure { e ->
                 uiState.update {
                     it.copy(
                         isUploadingPhoto = false,
@@ -142,14 +145,18 @@ class ItemDetailViewModel(app: Application) : AndroidViewModel(app) {
                 uiState.update {
                     it.copy(
                         imageUrl = null,
-                        isUploadingPhoto = false
+                        localSelectedPhotoUri = null,
+                        isUploadingPhoto = false,
+                        error = null,
+                        photoVersion = System.currentTimeMillis()
                     )
                 }
             }.onFailure { e ->
                 uiState.update {
                     it.copy(
-                        isUploadingPhoto = false,
-                        error = e.message ?: "Erreur suppression photo"
+                        imageUrl = null,
+                        localSelectedPhotoUri = null,
+                        isUploadingPhoto = false
                     )
                 }
             }

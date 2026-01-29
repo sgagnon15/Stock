@@ -23,7 +23,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sergeapps.stock.vm.ItemsListViewModel
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -82,6 +86,8 @@ fun ItemsListScreen(
                 Text("Va dans Paramètres pour configurer URL/Port/Clé d'API.")
             } else {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    val listVersion = remember(state.items) { System.currentTimeMillis() }
+
                     state.items.forEach { row ->
                         ItemRow(
                             itemId = row.id,
@@ -90,6 +96,7 @@ fun ItemsListScreen(
                             vendor = row.vendor,
                             manufacturer = row.manufacturer,
                             imageUrl = row.imageUrl,
+                            listVersion = listVersion,
                             onClick = onOpenItem
                         )
                     }
@@ -108,6 +115,7 @@ fun ItemRow(
     vendor: String,
     manufacturer: String,
     imageUrl: String?,
+    listVersion: Long,
     onClick: (Int) -> Unit
 )  {
     Card (
@@ -120,8 +128,12 @@ fun ItemRow(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            val bustedUrl = imageUrl?.let { url ->
+                if (url.contains("?")) "$url&v=$listVersion" else "$url?v=$listVersion"
+            }
+
             AsyncImage(
-                model = imageUrl,
+                model = bustedUrl,
                 contentDescription = null,
                 modifier = Modifier.size(56.dp)
             )
