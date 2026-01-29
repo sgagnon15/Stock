@@ -39,7 +39,7 @@ fun ItemsListScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
-    LaunchedEffect(Unit) {
+   LaunchedEffect(Unit) {
         viewModel.refresh()
     }
 
@@ -65,9 +65,12 @@ fun ItemsListScreen(
 
             OutlinedTextField(
                 value = state.filter,
-                onValueChange = { viewModel.setFilter(it) },
+                onValueChange = { newValue ->
+                    viewModel.onFilterChanged(newValue)
+                },
                 label = { Text("Filtre") },
-                singleLine = true
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
             )
 
             Row(

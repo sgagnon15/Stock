@@ -8,11 +8,16 @@ import com.sergeapps.stock.util.MultipartUtils
 class StockRepository(
     private val api: StockApiService
 ) {
-    suspend fun loadItemsPage(page: Int, nbItems: Int): List<ItemListDto> {
+    suspend fun loadItemsPage(
+        page: Int,
+        nbItems: Int,
+        filter: String?
+    ): List<ItemListDto> {
         return api.getItemList(
             pageNumber = page,
             orderBy = "description",
-            nbItems = nbItems
+            nbItems = nbItems,
+            filter = filter
         )
     }
 

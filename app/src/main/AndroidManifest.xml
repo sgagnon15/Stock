@@ -7,8 +7,9 @@
         android:label="Stock"
         android:supportsRtl="true"
         android:theme="@style/Theme.StockCompose"
-        tools:ignore="MissingApplicationIcon">
-
+        tools:ignore="MissingApplicationIcon"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round">
         <activity
             android:name=".MainActivity"
             android:exported="true">

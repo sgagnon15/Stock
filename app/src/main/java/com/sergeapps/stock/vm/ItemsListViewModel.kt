@@ -40,59 +40,53 @@ class ItemsListViewModel(app: Application) : AndroidViewModel(app) {
 
     fun refresh() {
         viewModelScope.launch {
-            uiState.value = uiState.value.copy(isLoading = true, error = null)
-            val settings: StockSettings = settingsStore.settingsFlow.first()
+            try {
+                uiState.value = uiState.value.copy(isLoading = true, error = null)
 
-            runCatching {
-                viewModelScope.launch {
-                    uiState.value = uiState.value.copy(isLoading = true, error = "Début refresh()")
+                val settings = settingsStore.settingsFlow.first()
+                val api = StockApiFactory.create(settings)
+                val repo = StockRepository(api)
 
-                    val settings = settingsStore.settingsFlow.first()
-                    val api = StockApiFactory.create(settings)
-                    val repo = StockRepository(api)
+                val nbItems = 6
+                val filter = uiState.value.filter.ifBlank { null }
 
-                    val nbItems = 6
-                    val filter = uiState.value.filter.ifBlank { null }
+                val total = repo.loadItemsTotalPages(nbItems, filter)
+                val currentPage = uiState.value.page.coerceIn(1, maxOf(1, total))
 
-                    // 1) nbpagesitem
-                    val total = try {
-                        uiState.value = uiState.value.copy(error = "Appel nbpagesitem…")
-                        repo.loadItemsTotalPages(nbItems = nbItems, filter = filter)
-                    } catch (e: Exception) {
-                        uiState.value = uiState.value.copy(isLoading = false, error = "Erreur nbpagesitem: ${e.message}")
-                        return@launch
+                val items = repo.loadItemsPage(
+                    page = currentPage,
+                    nbItems = nbItems,
+                    filter = filter
+                )
+
+                uiState.value = uiState.value.copy(
+                    isLoading = false,
+                    error = null,
+                    totalPages = maxOf(1, total),
+                    page = currentPage,
+                    items = items.map {
+                        ItemRowUi(
+                            id = it.id,
+                            itemNumber = it.itemNumber.toString(),
+                            description = it.description,
+                            vendor = it.vendor.orEmpty(),
+                            manufacturer = it.manufacturer.orEmpty(),
+                            imageUrl = it.url
+                        )
                     }
-
-                    val currentPage = uiState.value.page.coerceIn(1, maxOf(1, total))
-
-                    // 2) itemlist
-                    val items = try {
-                        uiState.value = uiState.value.copy(error = "Appel itemlist…")
-                        repo.loadItemsPage(page = currentPage, nbItems = nbItems)
-                    } catch (e: Exception) {
-                        uiState.value = uiState.value.copy(isLoading = false, error = "Erreur itemlist: ${e.message}")
-                        return@launch
-                    }
-
-                    uiState.value = uiState.value.copy(
-                        isLoading = false,
-                        error = null,
-                        totalPages = maxOf(1, total),
-                        page = currentPage,
-                        items = items.map {
-                            ItemRowUi(
-                                id = it.id,
-                                itemNumber = it.itemNumber.toString(),
-                                description = it.description,
-                                vendor = it.vendor.orEmpty(),
-                                manufacturer = it.manufacturer.orEmpty(),
-                                imageUrl = it.url
-                            )
-                        }
-                    )
-                }
+                )
+            } catch (e: Exception) {
+                uiState.value = uiState.value.copy(
+                    isLoading = false,
+                    error = e.message
+                )
             }
         }
+    }
+
+    fun onFilterChanged(newFilter: String) {
+        uiState.value = uiState.value.copy(filter = newFilter, page = 1)
+        refresh()
     }
 
     fun setFilter(newFilter: String) {

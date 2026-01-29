@@ -15,7 +15,8 @@ interface StockApiService {
     suspend fun getItemList(
         @Query("pagenumber") pageNumber: Int = 1,
         @Query("orderby") orderBy: String = "description",
-        @Query("nbitems") nbItems: Int = 6
+        @Query("nbitems") nbItems: Int = 6,
+        @Query("filter") filter: String? = null
     ): List<ItemListDto>
 
     @GET("nbpagesitem")
