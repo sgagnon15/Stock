@@ -22,6 +22,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sergeapps.stock.vm.ItemsListViewModel
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -70,7 +72,22 @@ fun ItemsListScreen(
                 },
                 label = { Text("Filtre") },
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                trailingIcon = {
+                    if (state.isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(18.dp),
+                            strokeWidth = 2.dp
+                        )
+                    } else if (state.filter.isNotEmpty()) {
+                        IconButton(onClick = { viewModel.onFilterChanged("") }) {
+                            Icon(
+                                imageVector = Icons.Filled.Close,
+                                contentDescription = "Effacer le filtre"
+                            )
+                        }
+                    }
+                }
             )
 
             Row(

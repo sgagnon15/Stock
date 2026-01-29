@@ -5,13 +5,18 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.sergeapps.stock.data.StockApiFactory
 import com.sergeapps.stock.data.StockRepository
-import com.sergeapps.stock.data.StockSettings
 import com.sergeapps.stock.data.StockSettingsStore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.CancellationException
+
 
 data class ItemsListUiState(
     val isLoading: Boolean = false,
@@ -33,13 +38,28 @@ data class ItemRowUi(
 
 
 class ItemsListViewModel(app: Application) : AndroidViewModel(app) {
-
     private val settingsStore = StockSettingsStore(app)
     private val uiState = MutableStateFlow(ItemsListUiState(isLoading = true))
     val state: StateFlow<ItemsListUiState> = uiState.asStateFlow()
+    private val filterFlow = MutableStateFlow("")
+    private var refreshJob: Job? = null
+
+    init {
+        viewModelScope.launch {
+            filterFlow
+                .debounce(300)
+                .distinctUntilChanged()
+                .collectLatest { newFilter ->
+                    uiState.value = uiState.value.copy(filter = newFilter, page = 1)
+                    refresh()
+                }
+        }
+    }
 
     fun refresh() {
-        viewModelScope.launch {
+        refreshJob?.cancel()
+
+        refreshJob = viewModelScope.launch {
             try {
                 uiState.value = uiState.value.copy(isLoading = true, error = null)
 
@@ -76,6 +96,9 @@ class ItemsListViewModel(app: Application) : AndroidViewModel(app) {
                     }
                 )
             } catch (e: Exception) {
+                // ⚠️ Important : ignorer l'annulation volontaire
+                if (e is CancellationException) return@launch
+
                 uiState.value = uiState.value.copy(
                     isLoading = false,
                     error = e.message
@@ -85,8 +108,11 @@ class ItemsListViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun onFilterChanged(newFilter: String) {
-        uiState.value = uiState.value.copy(filter = newFilter, page = 1)
-        refresh()
+        uiState.value = uiState.value.copy(
+            filter = newFilter,
+            page = 1
+        )
+        filterFlow.value = newFilter
     }
 
     fun setFilter(newFilter: String) {
