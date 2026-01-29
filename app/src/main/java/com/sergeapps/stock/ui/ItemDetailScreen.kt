@@ -81,13 +81,9 @@ import androidx.compose.ui.graphics.SolidColor
 import com.sergeapps.stock.vm.ManufUi
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.Surface
 import androidx.compose.material.icons.filled.Business
 import androidx.compose.material.icons.filled.LocalShipping
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.surfaceColorAtElevation
 
 
