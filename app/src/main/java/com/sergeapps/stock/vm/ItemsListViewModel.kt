@@ -115,10 +115,6 @@ class ItemsListViewModel(app: Application) : AndroidViewModel(app) {
         filterFlow.value = newFilter
     }
 
-    fun setFilter(newFilter: String) {
-        uiState.value = uiState.value.copy(filter = newFilter, page = 1)
-    }
-
     fun nextPage() {
         val next = (uiState.value.page + 1).coerceAtMost(uiState.value.totalPages)
         uiState.value = uiState.value.copy(page = next)
