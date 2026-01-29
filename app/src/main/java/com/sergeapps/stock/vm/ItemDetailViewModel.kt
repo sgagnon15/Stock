@@ -17,6 +17,9 @@ import android.net.Uri
 import com.sergeapps.stock.data.ItemDetailDto
 import kotlinx.coroutines.flow.update
 
+
+data class VendorUi(val name: String)
+
 data class ItemDetailUiState(
     val isLoading: Boolean = true,
     val error: String? = null,
@@ -29,13 +32,20 @@ data class ItemDetailUiState(
     val localSelectedPhotoUri: Uri? = null,
     val isUploadingPhoto: Boolean = false,
     val photoVersion: Long = 0L,
-    val apiKey: String = ""
+    val apiKey: String = "",
+    val vendorText: String = "",
+    val vendorOptions: List<VendorUi> = emptyList(),
+    val isVendorLoading: Boolean = false,
+    val manufacturerText: String = "",
+    val isManufacturerLoading: Boolean = false,
+    val manufacturerOptions: List<ManufUi> = emptyList()
 )
 
 class ItemDetailViewModel(app: Application) : AndroidViewModel(app) {
 
     private val settingsStore = StockSettingsStore(app)
-    private var repository: StockRepository? = null
+    private lateinit var repository: StockRepository
+
 
     private val uiState = MutableStateFlow(ItemDetailUiState())
     val state: StateFlow<ItemDetailUiState> = uiState.asStateFlow()
@@ -49,15 +59,16 @@ class ItemDetailViewModel(app: Application) : AndroidViewModel(app) {
             repository = StockRepository(api)
 
             runCatching {
-                repository!!.loadItemDetail(itemId)
-
+                repository.loadItemDetail(itemId)
             }.onSuccess { dto ->
                 uiState.value = ItemDetailUiState(
                     isLoading = false,
                     itemId = itemId,
                     itemDetail = dto,
                     imageUrl = dto.url,
-                    apiKey = settings.apiKey
+                    apiKey = settings.apiKey,
+                    vendorText = dto.vendor.orEmpty(),
+                    manufacturerText = dto.manufacturer.orEmpty() // 👈 AJOUT ICI
                 )
             }.onFailure { e ->
                 uiState.value = ItemDetailUiState(
@@ -77,13 +88,12 @@ class ItemDetailViewModel(app: Application) : AndroidViewModel(app) {
     fun uploadPickedPhoto(context: Context) {
         val itemId = uiState.value.itemId ?: return
         val uri = uiState.value.localSelectedPhotoUri ?: return
-        val repo = repository ?: return
 
         viewModelScope.launch {
             uiState.update { it.copy(isUploadingPhoto = true, error = null) }
 
             runCatching {
-                repo.uploadPhoto(context, itemId, uri)
+                repository.uploadPhoto(context, itemId, uri)
             }.onSuccess { response ->
                 if (response.ok && !response.url.isNullOrBlank()) {
                     uiState.update {
@@ -145,4 +155,75 @@ class ItemDetailViewModel(app: Application) : AndroidViewModel(app) {
             }
         }
     }
+
+    fun onVendorTextChanged(text: String) {
+        uiState.value = uiState.value.copy(vendorText = text)
+        refreshVendorOptions(text)
+    }
+
+    private fun refreshVendorOptions(text: String) {
+        viewModelScope.launch {
+            uiState.value = uiState.value.copy(isVendorLoading = true)
+
+            val rows = repository.loadVendors(
+                page = 1,
+                nbItems = 10
+            )
+
+            uiState.value = uiState.value.copy(
+                isVendorLoading = false,
+                vendorOptions = rows.map { VendorUi(it.description) }
+            )
+        }
+    }
+
+    fun refreshManufacturers(pageNumber: Int) {
+        viewModelScope.launch {
+            uiState.update { it.copy(isManufacturerLoading = true) }
+            try {
+                val list = repository.fetchManufacturers(
+                    nbItems = 10,
+                    pageNumber = pageNumber
+                )
+                uiState.update {
+                    it.copy(
+                        manufacturerOptions = list,
+                        isManufacturerLoading = false
+                    )
+                }
+            } catch (e: Exception) {
+                uiState.update { it.copy(isManufacturerLoading = false) }
+            }
+        }
+    }
+
+    fun onVendorSelected(vendor: String) {
+        uiState.value = uiState.value.copy(vendorText = vendor, vendorOptions = emptyList())
+        // plus tard: marquer l’item comme modifié / sauvegarder
+    }
+
+    fun onVendorOpen() {
+        refreshVendorOptions(uiState.value.vendorText)
+    }
+
+    fun onManufacturerTextChanged(value: String) {
+        uiState.update { it.copy(manufacturerText = value) }
+    }
+
+    fun onManufacturerOpen() {
+        refreshManufacturers(pageNumber = 1)
+    }
+
+    fun onManufacturerSelected(value: String) {
+        uiState.update {
+            it.copy(
+                manufacturerText = value,
+                manufacturerOptions = emptyList()
+            )
+        }
+    }
 }
+
+
+
+

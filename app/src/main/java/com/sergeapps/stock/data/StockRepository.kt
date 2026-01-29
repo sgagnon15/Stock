@@ -3,21 +3,35 @@ package com.sergeapps.stock.data
 import android.content.Context
 import android.net.Uri
 import com.sergeapps.stock.util.MultipartUtils
+import com.sergeapps.stock.vm.ManufDto
+import com.sergeapps.stock.vm.ManufUi
+import java.util.logging.Filter
 
 
 class StockRepository(
     private val api: StockApiService
 ) {
+    suspend fun fetchManufacturers(
+        nbItems: Int,
+        pageNumber: Int
+    ): List<ManufUi> {
+        return api.getManufList(nbItems, pageNumber)
+            .map { dto: ManufDto ->
+                ManufUi(name = dto.description.orEmpty())
+            }
+            .filter { manuf: ManufUi ->
+                manuf.name.isNotBlank()
+            }
+    }
+
     suspend fun loadItemsPage(
         page: Int,
-        nbItems: Int,
-        filter: String?
+        nbItems: Int
     ): List<ItemListDto> {
         return api.getItemList(
             pageNumber = page,
             orderBy = "description",
-            nbItems = nbItems,
-            filter = filter
+            nbItems = nbItems
         )
     }
 
@@ -59,4 +73,16 @@ class StockRepository(
             url = pictureUrl
         )
     }
+
+    suspend fun loadVendors(
+        page: Int = 1,
+        nbItems: Int = 10
+    ): List<VendorRowDto> {
+        return api.getVendorList(
+            pageNumber = page,
+            nbItems = nbItems
+        )
+    }
+
 }
+

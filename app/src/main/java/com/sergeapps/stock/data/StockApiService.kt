@@ -1,5 +1,6 @@
 package com.sergeapps.stock.data
 
+import com.sergeapps.stock.vm.ManufDto
 import retrofit2.http.GET
 import retrofit2.http.Query
 import okhttp3.MultipartBody
@@ -29,6 +30,19 @@ interface StockApiService {
     suspend fun getItemDetail(
         @Query("id") id: Int
     ): ItemDetailDto
+
+    @GET("vendorlist")
+    suspend fun getVendorList(
+        @Query("pagenumber") pageNumber: Int = 1,
+        @Query("nbitems") nbItems: Int = 10,
+        @Query("filter") filter: String? = null
+    ): List<VendorRowDto>
+
+    @GET("manufList")
+    suspend fun getManufList(
+        @Query("nbitems") nbItems: Int,
+        @Query("pagenumber") pageNumber: Int
+    ): List<ManufDto>
 
     @Multipart
     @POST("uploadpic")

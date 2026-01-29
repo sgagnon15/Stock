@@ -4,6 +4,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,7 +33,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -58,12 +58,28 @@ import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.sergeapps.stock.data.StockImageLoaderFactory
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExposedDropdownMenuBox
 import com.sergeapps.stock.data.ItemDetailDto
+import com.sergeapps.stock.vm.VendorUi
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.ui.focus.focusProperties
+import androidx.compose.ui.graphics.SolidColor
+import com.sergeapps.stock.vm.ManufUi
+import androidx.compose.runtime.withFrameNanos
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -149,7 +165,7 @@ fun ItemDetailScreen(
             }
 
             state.itemDetail != null -> {
-                val item = state.itemDetail
+                val item = state.itemDetail!!
 
                 val imageModel: Any? = when {
                     state.localSelectedPhotoUri != null -> state.localSelectedPhotoUri
@@ -183,7 +199,39 @@ fun ItemDetailScreen(
                     }
 
                     item {
-                        ItemDetailInfoSection(item = item!!)
+                        Card(
+                            shape = RoundedCornerShape(16.dp),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(14.dp),
+                                verticalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
+
+                                VendorPicker(
+                                    vendorText = state.vendorText,
+                                    isLoading = state.isVendorLoading,
+                                    options = state.vendorOptions,
+                                    onTextChanged = viewModel::onVendorTextChanged,
+                                    onSelected = viewModel::onVendorSelected,
+                                    onOpen = viewModel::onVendorOpen
+                                )
+
+                                ManufacturerPicker(
+                                    manufacturerText = state.manufacturerText,
+                                    isLoading = state.isManufacturerLoading,
+                                    options = state.manufacturerOptions,
+                                    onTextChanged = viewModel::onManufacturerTextChanged,
+                                    onSelected = viewModel::onManufacturerSelected,
+                                    onOpen = viewModel::onManufacturerOpen
+                                )
+
+                                DetailRow(label = "UOM", value = item.uom.orDash())
+                                DetailRow(label = "Code barre", value = item.barcode.orDash())
+                                DetailRow(label = "No. modèle", value = item.modelNum.orDash())
+                            }
+                        }
                     }
                 }
             }
@@ -387,7 +435,7 @@ private fun ItemFieldsCard(
             modifier = Modifier.padding(14.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            LabeledValueRow(label = "Vendeur", value = vendor)
+            LabeledValueRow(label = "Fournisseur", value = vendor)
             LabeledValueRow(label = "Fabricant", value = manufacturer)
 
             Divider()
@@ -540,5 +588,280 @@ private fun formatIsoDate(iso: String?): String {
         formatter.withZone(ZoneId.systemDefault()).format(instant)
     } catch (_: Exception) {
         iso
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun VendorPicker(
+    vendorText: String,
+    isLoading: Boolean,
+    options: List<VendorUi>,
+    onTextChanged: (String) -> Unit,
+    onSelected: (String) -> Unit,
+    onOpen: () -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+    var suppressFocusOnce by remember { mutableStateOf(false) }
+
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    fun closeImeAndClearFocus() {
+        expanded = false
+        focusManager.clearFocus()
+        keyboardController?.hide()
+    }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = {}
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .menuAnchor()
+                .heightIn(min = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // ✅ LABEL – IDENTIQUE À DetailRow
+            Text(
+                text = "Fournisseur",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.width(120.dp)
+            )
+
+//            Spacer(modifier = Modifier.width(12.dp))
+
+            // ✅ VALEUR – même zone que les autres champs
+            Row(
+                modifier = Modifier.weight(1f),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                BasicTextField(
+                    value = vendorText,
+                    onValueChange = onTextChanged,
+                    singleLine = true,
+                    textStyle = MaterialTheme.typography.bodySmall.copy(
+                        color = MaterialTheme.colorScheme.onSurface
+                    ),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(
+                        onDone = { closeImeAndClearFocus() }
+                    ),
+                    cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(vertical = 2.dp)
+                        .focusProperties {
+                            if (suppressFocusOnce) canFocus = false
+                        }
+                )
+
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .size(18.dp)
+                            .padding(start = 8.dp),
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .size(24.dp)
+                            .focusable(false)
+                            .clickable {
+                                suppressFocusOnce = true
+                                keyboardController?.hide()
+                                focusManager.clearFocus()
+                                if (!expanded) onOpen()
+                                expanded = true
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.ExpandMore,
+                            contentDescription = "Choisir un fournisseur"
+                        )
+                    }
+        }
+            }
+        }
+
+        // 🔽 MENU
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            if (!isLoading && options.isEmpty()) {
+                DropdownMenuItem(
+                    text = { Text("Aucun résultat") },
+                    onClick = { expanded = false },
+                    enabled = false
+                )
+            } else {
+                options.forEach { vendor ->
+                    DropdownMenuItem(
+                        text = { Text(vendor.name) },
+                        onClick = {
+                            onSelected(vendor.name)
+                            closeImeAndClearFocus()
+                        }
+                    )
+                }
+            }
+        }
+    }
+
+    LaunchedEffect(suppressFocusOnce) {
+        if (suppressFocusOnce) {
+            withFrameNanos { }
+            suppressFocusOnce = false
+        }
+    }
+
+    LaunchedEffect(expanded) {
+        if (expanded) {
+            focusManager.clearFocus()
+            keyboardController?.hide()
+        }
+    }
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ManufacturerPicker(
+    manufacturerText: String,
+    isLoading: Boolean,
+    options: List<ManufUi>,
+    onTextChanged: (String) -> Unit,
+    onSelected: (String) -> Unit,
+    onOpen: () -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+    var suppressFocusOnce by remember { mutableStateOf(false) }
+
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    fun closeImeAndClearFocus() {
+        expanded = false
+        focusManager.clearFocus()
+        keyboardController?.hide()
+    }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = {}
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .menuAnchor()
+                .heightIn(min = 12.dp),
+            verticalAlignment = Alignment.Top
+        ) {
+            Text(
+                text = "Fabricant",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.width(120.dp)
+            )
+
+//            Spacer(modifier = Modifier.width(12.dp))
+
+            Row(
+                modifier = Modifier.weight(1f),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                BasicTextField(
+                    value = manufacturerText,
+                    onValueChange = onTextChanged,
+                    singleLine = true,
+                    textStyle = MaterialTheme.typography.bodySmall.copy(
+                        color = MaterialTheme.colorScheme.onSurface
+                    ),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(
+                        onDone = { closeImeAndClearFocus() }
+                    ),
+                    cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(vertical = 2.dp)
+                        .focusProperties {
+                            if (suppressFocusOnce) canFocus = false
+                        }
+                )
+
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .size(18.dp)
+                            .padding(start = 8.dp),
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .size(24.dp)
+                            .focusable(false)
+                            .clickable {
+                                suppressFocusOnce = true
+                                keyboardController?.hide()
+                                focusManager.clearFocus()
+                                if (!expanded) onOpen()
+                                expanded = true
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.ExpandMore,
+                            contentDescription = "Choisir un fabricant"
+                        )
+                    }
+                }
+            }
+        }
+
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            if (!isLoading && options.isEmpty()) {
+                DropdownMenuItem(
+                    text = { Text("Aucun résultat") },
+                    onClick = { expanded = false },
+                    enabled = false
+                )
+            } else {
+                options.forEach { manuf ->
+                    DropdownMenuItem(
+                        text = { Text(manuf.name) },
+                        onClick = {
+                            onSelected(manuf.name)
+                            closeImeAndClearFocus()
+                        }
+                    )
+                }
+            }
+        }
+        LaunchedEffect(suppressFocusOnce) {
+            if (suppressFocusOnce) {
+                withFrameNanos { }
+                suppressFocusOnce = false
+            }
+        }
+
+        LaunchedEffect(expanded) {
+            if (expanded) {
+                focusManager.clearFocus()
+                keyboardController?.hide()
+            }
+        }
     }
 }

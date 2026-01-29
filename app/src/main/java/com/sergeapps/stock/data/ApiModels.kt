@@ -5,6 +5,12 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
+data class VendorRowDto(
+    val pagenumber: String,
+    val description: String
+)
+
+@Serializable
 data class NbPagesDto(
     @SerialName("nbpages") val nbPages: String
 )
