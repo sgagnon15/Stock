@@ -43,13 +43,11 @@ class ItemsListViewModel(app: Application) : AndroidViewModel(app) {
             uiState.value = uiState.value.copy(isLoading = true, error = null)
             val settings: StockSettings = settingsStore.settingsFlow.first()
 
-            val api = StockApiFactory.create(settings)
-
             runCatching {
                 viewModelScope.launch {
                     uiState.value = uiState.value.copy(isLoading = true, error = "Début refresh()")
 
-                    val settings: StockSettings = settingsStore.settingsFlow.first()
+                    val settings = settingsStore.settingsFlow.first()
                     val api = StockApiFactory.create(settings)
                     val repo = StockRepository(api)
 

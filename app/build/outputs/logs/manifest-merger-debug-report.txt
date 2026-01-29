@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:1:1-19:12
-INJECTED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:1:1-19:12
-INJECTED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:1:1-19:12
-INJECTED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:1:1-19:12
+ADDED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:1:1-21:12
+INJECTED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:1:1-21:12
+INJECTED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:1:1-21:12
+INJECTED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:1:1-21:12
 MERGED from [androidx.navigation:navigation-common:2.8.6] C:\Users\sgagn\.gradle\caches\8.9\transforms\7843912cdb534e06d0591af2da25e54a\transformed\navigation-common-2.8.6\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.navigation:navigation-runtime:2.8.6] C:\Users\sgagn\.gradle\caches\8.9\transforms\34fa722fd29a253a682bf3a61d542a95\transformed\navigation-runtime-2.8.6\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.navigation:navigation-common-ktx:2.8.6] C:\Users\sgagn\.gradle\caches\8.9\transforms\f0fcf8320938c0527bebebbce045bd02\transformed\navigation-common-ktx-2.8.6\AndroidManifest.xml:2:1-7:12
@@ -71,17 +71,19 @@ MERGED from [androidx.annotation:annotation-experimental:1.4.1] C:\Users\sgagn\.
 		INJECTED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml
 	android:versionName
 		INJECTED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml
+	xmlns:tools
+		ADDED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:1:11-57
 	android:versionCode
 		INJECTED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml
 	xmlns:android
-		ADDED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:1:11-69
+		ADDED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:2:5-63
 uses-permission#android.permission.INTERNET
-ADDED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:2:5-67
+ADDED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:3:5-67
 	android:name
-		ADDED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:2:22-64
+		ADDED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:3:22-64
 application
-ADDED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:4:5-18:19
-INJECTED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:4:5-18:19
+ADDED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:5:5-20:19
+INJECTED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:5:5-20:19
 MERGED from [androidx.compose.ui:ui-tooling-android:1.7.6] C:\Users\sgagn\.gradle\caches\8.9\transforms\5188359e14a3e4a90dc929d395be0840\transformed\ui-tooling-release\AndroidManifest.xml:22:5-26:19
 MERGED from [androidx.compose.ui:ui-tooling-android:1.7.6] C:\Users\sgagn\.gradle\caches\8.9\transforms\5188359e14a3e4a90dc929d395be0840\transformed\ui-tooling-release\AndroidManifest.xml:22:5-26:19
 MERGED from [androidx.emoji2:emoji2:1.3.0] C:\Users\sgagn\.gradle\caches\8.9\transforms\4feaa57dfc0e81735e24728d2990502c\transformed\emoji2-1.3.0\AndroidManifest.xml:23:5-33:19
@@ -101,29 +103,31 @@ MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\sg
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.15.0] C:\Users\sgagn\.gradle\caches\8.9\transforms\fce142df9ad8d19e2783aec8bf20710b\transformed\core-1.15.0\AndroidManifest.xml:28:18-86
 	android:supportsRtl
-		ADDED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:7:9-35
+		ADDED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:8:9-35
 	android:label
-		ADDED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:6:9-30
+		ADDED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:7:9-30
+	tools:ignore
+		ADDED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:10:9-46
 	android:allowBackup
-		ADDED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:5:9-35
+		ADDED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:6:9-35
 	android:theme
-		ADDED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:8:9-50
+		ADDED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:9:9-50
 activity#com.sergeapps.stock.MainActivity
-ADDED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:10:9-17:20
+ADDED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:12:9-19:20
 	android:exported
-		ADDED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:12:13-36
+		ADDED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:14:13-36
 	android:name
-		ADDED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:11:13-41
+		ADDED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:13:13-41
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:13:13-16:29
+ADDED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:15:13-18:29
 action#android.intent.action.MAIN
-ADDED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:14:17-69
+ADDED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:16:17-69
 	android:name
-		ADDED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:14:25-66
+		ADDED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:16:25-66
 category#android.intent.category.LAUNCHER
-ADDED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:15:17-77
+ADDED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:17:17-77
 	android:name
-		ADDED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:15:27-74
+		ADDED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml:17:27-74
 uses-sdk
 INJECTED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml

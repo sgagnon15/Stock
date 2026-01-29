@@ -1,11 +1,13 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
         android:label="Stock"
         android:supportsRtl="true"
-        android:theme="@style/Theme.StockCompose">
+        android:theme="@style/Theme.StockCompose"
+        tools:ignore="MissingApplicationIcon">
 
         <activity
             android:name=".MainActivity"
