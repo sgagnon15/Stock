@@ -48,6 +48,7 @@ MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7] C:\Users\sgagn\.g
 MERGED from [androidx.lifecycle:lifecycle-runtime-ktx-android:2.8.7] C:\Users\sgagn\.gradle\caches\8.9\transforms\5f184c35a7239421871e74e16f35b8a1\transformed\lifecycle-runtime-ktx-release\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.lifecycle:lifecycle-viewmodel-compose-android:2.8.7] C:\Users\sgagn\.gradle\caches\8.9\transforms\370a5522c7013e6c17afef7ee8034ac8\transformed\lifecycle-viewmodel-compose-release\AndroidManifest.xml:2:1-7:12
 MERGED from [com.google.accompanist:accompanist-drawablepainter:0.32.0] C:\Users\sgagn\.gradle\caches\8.9\transforms\b8b5c9ab2322e04437caf8f36a392581\transformed\accompanist-drawablepainter-0.32.0\AndroidManifest.xml:17:1-23:12
+MERGED from [androidx.compose.material:material-icons-extended-android:1.7.6] C:\Users\sgagn\.gradle\caches\8.9\transforms\4385ba16b4d793e4bb58ba2e3da6adc4\transformed\material-icons-extended-release\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.compose.material:material-icons-core-android:1.7.6] C:\Users\sgagn\.gradle\caches\8.9\transforms\51668eaebf69c09157b0efd01895834d\transformed\material-icons-core-release\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.compose.ui:ui-android:1.7.6] C:\Users\sgagn\.gradle\caches\8.9\transforms\a3a455ec807ebd9c2c6a03e8458e71ab\transformed\ui-release\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.activity:activity-ktx:1.10.0] C:\Users\sgagn\.gradle\caches\8.9\transforms\d81365e45f5c2216cb7bea6c2787cf4f\transformed\activity-ktx-1.10.0\AndroidManifest.xml:2:1-7:12
@@ -67,6 +68,9 @@ MERGED from [androidx.compose.runtime:runtime-saveable-android:1.7.6] C:\Users\s
 MERGED from [androidx.exifinterface:exifinterface:1.3.7] C:\Users\sgagn\.gradle\caches\8.9\transforms\1c3193de6fe291ece6474197479f154a\transformed\exifinterface-1.3.7\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.arch.core:core-runtime:2.2.0] C:\Users\sgagn\.gradle\caches\8.9\transforms\91c7774b049b812cba1970da60053207\transformed\core-runtime-2.2.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.annotation:annotation-experimental:1.4.1] C:\Users\sgagn\.gradle\caches\8.9\transforms\38941c1cdf329cd6d0405b78855c6ec9\transformed\annotation-experimental-1.4.1\AndroidManifest.xml:2:1-7:12
+MERGED from [com.google.ai.edge.litert:litert-support-api:1.4.1] C:\Users\sgagn\.gradle\caches\8.9\transforms\62ab628b7d7a9f4eb10c001fc5fc96a1\transformed\litert-support-api-1.4.1\AndroidManifest.xml:2:1-5:12
+MERGED from [com.google.ai.edge.litert:litert-api:1.4.1] C:\Users\sgagn\.gradle\caches\8.9\transforms\39160d0553a64af8336d5e6627df978e\transformed\litert-api-1.4.1\AndroidManifest.xml:2:1-11:12
+MERGED from [com.google.android.odml:image:1.0.0-beta1] C:\Users\sgagn\.gradle\caches\8.9\transforms\ab8389dc571ce8ddfa9936f3a15bd89c\transformed\image-1.0.0-beta1\AndroidManifest.xml:2:1-9:12
 	package
 		INJECTED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml
 	android:versionName
@@ -98,6 +102,10 @@ MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\sgagn\.gradle\cach
 MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\sgagn\.gradle\caches\8.9\transforms\86c7213751b4ed810a8b96d7a9d861b8\transformed\startup-runtime-1.1.1\AndroidManifest.xml:25:5-31:19
 MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\sgagn\.gradle\caches\8.9\transforms\c6b27c85a5b5e7e18f815f72c10c5b43\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:24:5-25:19
 MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\sgagn\.gradle\caches\8.9\transforms\c6b27c85a5b5e7e18f815f72c10c5b43\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:24:5-25:19
+MERGED from [com.google.ai.edge.litert:litert-api:1.4.1] C:\Users\sgagn\.gradle\caches\8.9\transforms\39160d0553a64af8336d5e6627df978e\transformed\litert-api-1.4.1\AndroidManifest.xml:9:5-20
+MERGED from [com.google.ai.edge.litert:litert-api:1.4.1] C:\Users\sgagn\.gradle\caches\8.9\transforms\39160d0553a64af8336d5e6627df978e\transformed\litert-api-1.4.1\AndroidManifest.xml:9:5-20
+MERGED from [com.google.android.odml:image:1.0.0-beta1] C:\Users\sgagn\.gradle\caches\8.9\transforms\ab8389dc571ce8ddfa9936f3a15bd89c\transformed\image-1.0.0-beta1\AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.odml:image:1.0.0-beta1] C:\Users\sgagn\.gradle\caches\8.9\transforms\ab8389dc571ce8ddfa9936f3a15bd89c\transformed\image-1.0.0-beta1\AndroidManifest.xml:7:5-20
 	android:extractNativeLibs
 		INJECTED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml
 	android:appComponentFactory
@@ -224,6 +232,8 @@ MERGED from [androidx.lifecycle:lifecycle-viewmodel-compose-android:2.8.7] C:\Us
 MERGED from [androidx.lifecycle:lifecycle-viewmodel-compose-android:2.8.7] C:\Users\sgagn\.gradle\caches\8.9\transforms\370a5522c7013e6c17afef7ee8034ac8\transformed\lifecycle-viewmodel-compose-release\AndroidManifest.xml:5:5-44
 MERGED from [com.google.accompanist:accompanist-drawablepainter:0.32.0] C:\Users\sgagn\.gradle\caches\8.9\transforms\b8b5c9ab2322e04437caf8f36a392581\transformed\accompanist-drawablepainter-0.32.0\AndroidManifest.xml:21:5-44
 MERGED from [com.google.accompanist:accompanist-drawablepainter:0.32.0] C:\Users\sgagn\.gradle\caches\8.9\transforms\b8b5c9ab2322e04437caf8f36a392581\transformed\accompanist-drawablepainter-0.32.0\AndroidManifest.xml:21:5-44
+MERGED from [androidx.compose.material:material-icons-extended-android:1.7.6] C:\Users\sgagn\.gradle\caches\8.9\transforms\4385ba16b4d793e4bb58ba2e3da6adc4\transformed\material-icons-extended-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-icons-extended-android:1.7.6] C:\Users\sgagn\.gradle\caches\8.9\transforms\4385ba16b4d793e4bb58ba2e3da6adc4\transformed\material-icons-extended-release\AndroidManifest.xml:5:5-44
 MERGED from [androidx.compose.material:material-icons-core-android:1.7.6] C:\Users\sgagn\.gradle\caches\8.9\transforms\51668eaebf69c09157b0efd01895834d\transformed\material-icons-core-release\AndroidManifest.xml:5:5-44
 MERGED from [androidx.compose.material:material-icons-core-android:1.7.6] C:\Users\sgagn\.gradle\caches\8.9\transforms\51668eaebf69c09157b0efd01895834d\transformed\material-icons-core-release\AndroidManifest.xml:5:5-44
 MERGED from [androidx.compose.ui:ui-android:1.7.6] C:\Users\sgagn\.gradle\caches\8.9\transforms\a3a455ec807ebd9c2c6a03e8458e71ab\transformed\ui-release\AndroidManifest.xml:5:5-44
@@ -262,6 +272,12 @@ MERGED from [androidx.arch.core:core-runtime:2.2.0] C:\Users\sgagn\.gradle\cache
 MERGED from [androidx.arch.core:core-runtime:2.2.0] C:\Users\sgagn\.gradle\caches\8.9\transforms\91c7774b049b812cba1970da60053207\transformed\core-runtime-2.2.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.annotation:annotation-experimental:1.4.1] C:\Users\sgagn\.gradle\caches\8.9\transforms\38941c1cdf329cd6d0405b78855c6ec9\transformed\annotation-experimental-1.4.1\AndroidManifest.xml:5:5-44
 MERGED from [androidx.annotation:annotation-experimental:1.4.1] C:\Users\sgagn\.gradle\caches\8.9\transforms\38941c1cdf329cd6d0405b78855c6ec9\transformed\annotation-experimental-1.4.1\AndroidManifest.xml:5:5-44
+MERGED from [com.google.ai.edge.litert:litert-support-api:1.4.1] C:\Users\sgagn\.gradle\caches\8.9\transforms\62ab628b7d7a9f4eb10c001fc5fc96a1\transformed\litert-support-api-1.4.1\AndroidManifest.xml:4:3-71
+MERGED from [com.google.ai.edge.litert:litert-support-api:1.4.1] C:\Users\sgagn\.gradle\caches\8.9\transforms\62ab628b7d7a9f4eb10c001fc5fc96a1\transformed\litert-support-api-1.4.1\AndroidManifest.xml:4:3-71
+MERGED from [com.google.ai.edge.litert:litert-api:1.4.1] C:\Users\sgagn\.gradle\caches\8.9\transforms\39160d0553a64af8336d5e6627df978e\transformed\litert-api-1.4.1\AndroidManifest.xml:6:5-7:38
+MERGED from [com.google.ai.edge.litert:litert-api:1.4.1] C:\Users\sgagn\.gradle\caches\8.9\transforms\39160d0553a64af8336d5e6627df978e\transformed\litert-api-1.4.1\AndroidManifest.xml:6:5-7:38
+MERGED from [com.google.android.odml:image:1.0.0-beta1] C:\Users\sgagn\.gradle\caches\8.9\transforms\ab8389dc571ce8ddfa9936f3a15bd89c\transformed\image-1.0.0-beta1\AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.odml:image:1.0.0-beta1] C:\Users\sgagn\.gradle\caches\8.9\transforms\ab8389dc571ce8ddfa9936f3a15bd89c\transformed\image-1.0.0-beta1\AndroidManifest.xml:5:5-44
 	android:targetSdkVersion
 		INJECTED from C:\Users\sgagn\AndroidStudioProjects\StockCompose\app\src\main\AndroidManifest.xml
 	android:minSdkVersion

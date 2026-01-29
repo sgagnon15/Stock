@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.sergeapps.stock.app-mergeDebugResources-55:/values-hu/values-hu.xml",
+            "outputFile": "com.sergeapps.stock.app-mergeDebugResources-56:/values-hu/values-hu.xml",
             "map": [
                 {
                     "source": "C:\\Users\\sgagn\\.gradle\\caches\\8.9\\transforms\\a3a455ec807ebd9c2c6a03e8458e71ab\\transformed\\ui-release\\res\\values-hu\\values-hu.xml",

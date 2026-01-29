@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.sergeapps.stock.app-mergeDebugResources-55:/values-en-rIN/values-en-rIN.xml",
+            "outputFile": "com.sergeapps.stock.app-mergeDebugResources-56:/values-en-rIN/values-en-rIN.xml",
             "map": [
                 {
                     "source": "C:\\Users\\sgagn\\.gradle\\caches\\8.9\\transforms\\fce142df9ad8d19e2783aec8bf20710b\\transformed\\core-1.15.0\\res\\values-en-rIN\\values-en-rIN.xml",

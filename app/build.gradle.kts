@@ -42,6 +42,7 @@ android {
 }
 
 dependencies {
+    implementation("com.google.ai.edge.litert:litert-support-api:1.4.1")
     val composeBom = platform("androidx.compose:compose-bom:2025.01.00")
     implementation(composeBom)
     androidTestImplementation(composeBom)
@@ -56,6 +57,7 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.navigation:navigation-compose:2.8.6")
+    implementation("androidx.compose.material:material-icons-extended")
 
     // Networking
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
