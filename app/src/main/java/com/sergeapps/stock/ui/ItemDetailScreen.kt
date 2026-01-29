@@ -1,8 +1,5 @@
 package com.sergeapps.stock.ui
 
-import android.content.Intent
-import android.net.Uri
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -10,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,7 +25,6 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -60,7 +57,13 @@ import kotlinx.coroutines.launch
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.sergeapps.stock.data.StockImageLoaderFactory
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import com.sergeapps.stock.data.ItemDetailDto
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -70,10 +73,8 @@ fun ItemDetailScreen(
     onBack: () -> Unit,
     viewModel: ItemDetailViewModel = viewModel()
 ) {
-    val state by viewModel.state.collectAsState()
     val context = LocalContext.current
     var showDeletePhotoDialog by remember { mutableStateOf(false) }
-//    var lastAutoUploadedUri by remember { mutableStateOf<Uri?>(null) }
     val coroutineScope = rememberCoroutineScope()
 
     val pickImageLauncher = rememberLauncherForActivityResult(
@@ -83,10 +84,7 @@ fun ItemDetailScreen(
                 return@rememberLauncherForActivityResult
             }
 
-            // 1) Met à jour le state avec la photo choisie (pour l’aperçu immédiat)
             viewModel.onPickPhoto(uri)
-
-            // 2) Upload automatique
             coroutineScope.launch {
                 delay(80)
                 viewModel.uploadPickedPhoto(context)
@@ -123,82 +121,70 @@ fun ItemDetailScreen(
         )
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "Détail article",
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Text(text = "←")
-                    }
-                }
-            )
-        }
-    ) { padding ->
+    Scaffold { padding ->
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = 16.dp, vertical = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp)
-        ) {
+        val state by viewModel.state.collectAsState()
 
-            if (state.isLoading) {
-                Text(text = "Chargement…")
-                return@Column
-            }
-
-            if (state.error != null) {
-                Text(text = "Erreur: ${state.error}")
-                return@Column
-            }
-
-            val imageModel: Any? = when {
-                state.localSelectedPhotoUri != null -> state.localSelectedPhotoUri
-                !state.imageUrl.isNullOrBlank() -> state.imageUrl
-                else -> null
-            }
-
-            PhotoHeroCard(
-                imageModel = imageModel,
-                photoVersion = state.photoVersion,
-                hasRemotePhoto = !state.imageUrl.isNullOrBlank(),
-                isUploading = state.isUploadingPhoto,
-                apiKey = state.apiKey,                 // ✅
-                onPickPhoto = { pickImageLauncher.launch("image/*") },
-                onAskDeletePhoto = { showDeletePhotoDialog = true }
-            )
-
-            ItemHeaderCard(
-                title = "${state.itemNumber} — ${state.description}"
-            )
-
-            ItemFieldsCard(
-                vendor = state.vendor,
-                manufacturer = state.manufacturer,
-                uom = state.uom,
-                barcode = state.barcode,
-                minLevel = state.minLevel,
-                maxLevel = state.maxLevel
-            )
-
-            if (state.vendorUrl.isNotBlank()) {
-                FilledTonalButton(
-                    onClick = {
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(state.vendorUrl))
-                        context.startActivity(intent)
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    enabled = !state.isUploadingPhoto
+        when {
+            state.isLoading -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Text(text = "Ouvrir le lien vendeur")
+                    Text("Chargement…")
+                }
+            }
+
+            state.error != null -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("Erreur : ${state.error}")
+                }
+            }
+
+            state.itemDetail != null -> {
+                val item = state.itemDetail
+
+                val imageModel: Any? = when {
+                    state.localSelectedPhotoUri != null -> state.localSelectedPhotoUri
+                    !state.imageUrl.isNullOrBlank() -> state.imageUrl
+                    else -> null
+                }
+
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding),
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
+                    verticalArrangement = Arrangement.spacedBy(14.dp)
+                ) {
+                    item {
+                        PhotoHeroCard(
+                            imageModel = imageModel,
+                            photoVersion = state.photoVersion,
+                            hasRemotePhoto = !state.imageUrl.isNullOrBlank(),
+                            isUploading = state.isUploadingPhoto,
+                            apiKey = state.apiKey,
+                            onPickPhoto = { pickImageLauncher.launch("image/*") },
+                            onAskDeletePhoto = { showDeletePhotoDialog = true }
+                        )
+                    }
+
+                    item {
+                        ItemHeaderCard(
+                            title = "${item!!.itemNumber} — ${item.description}"
+                        )
+                    }
+
+                    item {
+                        ItemDetailInfoSection(item = item!!)
+                    }
                 }
             }
         }
@@ -482,5 +468,77 @@ private fun StatChip(
                 fontWeight = FontWeight.SemiBold
             )
         }
+    }
+}
+
+@Composable
+fun ItemDetailInfoSection(
+    item: ItemDetailDto,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        DetailRow(label = "UOM", value = item.uom.orDash())
+        DetailRow(label = "CAB", value = item.barcode.orDash())
+        DetailRow(label = "Fournisseur", value = item.vendor.orDash())
+        DetailRow(label = "Manufactutier", value = item.manufacturer.orDash())
+        DetailRow(label = "No. modèle", value = item.modelNum.orDash())
+
+        DetailRow(label = "Coût moyen", value = item.avgCost.orDash())
+        DetailRow(label = "Qté Min", value = item.minLevel.orDash())
+        DetailRow(label = "Qté Max", value = item.maxLevel.orDash())
+
+        DetailRow(label = "SKU", value = item.sku.orDash())
+//        DetailRow(label = "Vendor URL", value = item.vendorUrl.orDash())
+
+        DetailRow(label = "Classification", value = item.classId?.toString().orDash())
+        DetailRow(label = "Date de création", value = formatIsoDate(item.creationDate))
+    }
+}
+
+
+@Composable
+private fun DetailRow(
+    label: String,
+    value: String,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.Top
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.width(120.dp)
+        )
+
+        Spacer(modifier = Modifier.width(12.dp))
+
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurface,
+            overflow = TextOverflow.Ellipsis
+        )
+    }
+}
+
+private fun String?.orDash(): String {
+    return if (this.isNullOrBlank()) "—" else this
+}
+
+private fun formatIsoDate(iso: String?): String {
+    if (iso.isNullOrBlank()) return "—"
+    return try {
+        val instant = Instant.parse(iso)
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+        formatter.withZone(ZoneId.systemDefault()).format(instant)
+    } catch (_: Exception) {
+        iso
     }
 }

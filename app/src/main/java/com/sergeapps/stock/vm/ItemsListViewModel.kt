@@ -51,7 +51,7 @@ class ItemsListViewModel(app: Application) : AndroidViewModel(app) {
                     val api = StockApiFactory.create(settings)
                     val repo = StockRepository(api)
 
-                    val nbItems = 10
+                    val nbItems = 6
                     val filter = uiState.value.filter.ifBlank { null }
 
                     // 1) nbpagesitem

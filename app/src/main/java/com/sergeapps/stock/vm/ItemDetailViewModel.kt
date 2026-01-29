@@ -14,27 +14,18 @@ import kotlinx.coroutines.launch
 
 import android.content.Context
 import android.net.Uri
+import com.sergeapps.stock.data.ItemDetailDto
 import kotlinx.coroutines.flow.update
 
 data class ItemDetailUiState(
     val isLoading: Boolean = true,
     val error: String? = null,
 
+    val itemDetail: ItemDetailDto? = null,
     val itemId: Int? = null,
 
-    val itemNumber: String = "",
-    val description: String = "",
-    val vendor: String = "",
-    val manufacturer: String = "",
-    val uom: String = "",
-    val barcode: String = "",
-    val minLevel: String = "",
-    val maxLevel: String = "",
-    val vendorUrl: String = "",
-
-    val imageUrl: String? = null,
-
     // --- PHOTO ---
+    val imageUrl: String? = null,
     val localSelectedPhotoUri: Uri? = null,
     val isUploadingPhoto: Boolean = false,
     val photoVersion: Long = 0L,
@@ -64,15 +55,7 @@ class ItemDetailViewModel(app: Application) : AndroidViewModel(app) {
                 uiState.value = ItemDetailUiState(
                     isLoading = false,
                     itemId = itemId,
-                    itemNumber = dto.itemNumber.toString(),
-                    description = dto.description,
-                    vendor = dto.vendor.orEmpty(),
-                    manufacturer = dto.manufacturer.orEmpty(),
-                    uom = dto.uom.orEmpty(),
-                    barcode = dto.barcode.orEmpty(),
-                    minLevel = dto.minLevel.orEmpty(),
-                    maxLevel = dto.maxLevel.orEmpty(),
-                    vendorUrl = dto.vendorUrl.orEmpty(),
+                    itemDetail = dto,
                     imageUrl = dto.url,
                     apiKey = settings.apiKey
                 )

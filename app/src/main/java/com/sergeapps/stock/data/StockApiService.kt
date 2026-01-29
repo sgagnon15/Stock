@@ -15,12 +15,12 @@ interface StockApiService {
     suspend fun getItemList(
         @Query("pagenumber") pageNumber: Int = 1,
         @Query("orderby") orderBy: String = "description",
-        @Query("nbitems") nbItems: Int = 10
+        @Query("nbitems") nbItems: Int = 6
     ): List<ItemListDto>
 
     @GET("nbpagesitem")
     suspend fun getNbPagesItem(
-        @Query("nbitems") nbItems: Int = 10,
+        @Query("nbitems") nbItems: Int = 6,
         @Query("filter") filter: String? = null
     ): NbPagesDto
 

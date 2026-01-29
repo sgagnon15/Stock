@@ -23,6 +23,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sergeapps.stock.vm.ItemsListViewModel
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImage
@@ -117,8 +118,8 @@ fun ItemRow(
     imageUrl: String?,
     listVersion: Long,
     onClick: (Int) -> Unit
-)  {
-    Card (
+) {
+    Card(
         onClick = { onClick(itemId) }
     ) {
         Row(
@@ -128,20 +129,27 @@ fun ItemRow(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            val bustedUrl = imageUrl?.let { url ->
+
+            val model = imageUrl?.let { url ->
+                // Cache normal, mais on change l’URL quand la liste est refreshée
                 if (url.contains("?")) "$url&v=$listVersion" else "$url?v=$listVersion"
             }
 
             AsyncImage(
-                model = bustedUrl,
+                model = model,
                 contentDescription = null,
                 modifier = Modifier.size(56.dp)
             )
 
             Column(modifier = Modifier.weight(1f)) {
-                Text(text = "$itemNumber — $description", style = MaterialTheme.typography.titleMedium)
                 Text(
-                    text = listOf(vendor, manufacturer).filter { it.isNotBlank() }.joinToString(" • "),
+                    text = "$itemNumber — $description",
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Text(
+                    text = listOf(vendor, manufacturer)
+                        .filter { it.isNotBlank() }
+                        .joinToString(" • "),
                     style = MaterialTheme.typography.bodySmall
                 )
             }
