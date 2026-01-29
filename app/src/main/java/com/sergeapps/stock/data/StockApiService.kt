@@ -3,7 +3,6 @@ package com.sergeapps.stock.data
 import retrofit2.http.GET
 import retrofit2.http.Query
 import okhttp3.MultipartBody
-import okhttp3.ResponseBody
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
@@ -29,13 +28,6 @@ interface StockApiService {
     @GET("itemdetail")
     suspend fun getItemDetail(
         @Query("id") id: Int
-    ): ItemDetailDto
-    @Multipart
-
-    @POST("items/{itemId}/photo")
-    suspend fun uploadItemPhoto(
-        @Path("itemId") itemId: Long,
-        @Part photo: MultipartBody.Part
     ): ItemDetailDto
 
     @Multipart

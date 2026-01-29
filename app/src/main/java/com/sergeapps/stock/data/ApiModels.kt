@@ -4,18 +4,10 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 
-@kotlinx.serialization.Serializable
+@Serializable
 data class NbPagesDto(
-    @kotlinx.serialization.SerialName("nbpages") val nbPages: String
+    @SerialName("nbpages") val nbPages: String
 )
-
-data class Item(
-    val id: Long,
-    val name: String,
-    val quantity: Int,
-    val photoUrl: String?
-)
-
 
 @Serializable
 data class ItemDetailDto(
