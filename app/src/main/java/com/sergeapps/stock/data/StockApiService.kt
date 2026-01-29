@@ -1,6 +1,5 @@
 package com.sergeapps.stock.data
 
-import com.sergeapps.stock.vm.ManufDto
 import retrofit2.http.GET
 import retrofit2.http.Query
 import okhttp3.MultipartBody

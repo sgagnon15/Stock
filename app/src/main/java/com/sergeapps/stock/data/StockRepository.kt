@@ -3,26 +3,11 @@ package com.sergeapps.stock.data
 import android.content.Context
 import android.net.Uri
 import com.sergeapps.stock.util.MultipartUtils
-import com.sergeapps.stock.vm.ManufDto
-import com.sergeapps.stock.vm.ManufUi
-import java.util.logging.Filter
 
 
 class StockRepository(
     private val api: StockApiService
 ) {
-    suspend fun fetchManufacturers(
-        nbItems: Int,
-        pageNumber: Int
-    ): List<ManufUi> {
-        return api.getManufList(nbItems, pageNumber)
-            .map { dto: ManufDto ->
-                ManufUi(name = dto.description.orEmpty())
-            }
-            .filter { manuf: ManufUi ->
-                manuf.name.isNotBlank()
-            }
-    }
 
     suspend fun loadItemsPage(
         page: Int,
@@ -75,14 +60,22 @@ class StockRepository(
     }
 
     suspend fun loadVendors(
-        page: Int = 1,
-        nbItems: Int = 10
+        pageNumber: Int,
+        nbItems: Int
     ): List<VendorRowDto> {
         return api.getVendorList(
-            pageNumber = page,
-            nbItems = nbItems
+            nbItems = nbItems,
+            pageNumber = pageNumber
         )
     }
 
+    suspend fun fetchManufacturers(
+        nbItems: Int,
+        pageNumber: Int
+    ): List<String> {
+        return api.getManufList(nbItems, pageNumber)
+            .map { dto -> dto.description.orEmpty() }
+            .filter { name -> name.isNotBlank() }
+    }
 }
 

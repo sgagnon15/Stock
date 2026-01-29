@@ -80,6 +80,14 @@ import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.graphics.SolidColor
 import com.sergeapps.stock.vm.ManufUi
 import androidx.compose.runtime.withFrameNanos
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.Surface
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.Dp
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -693,23 +701,44 @@ fun VendorPicker(
         // 🔽 MENU
         ExposedDropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false }
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.exposedDropdownSize(matchTextFieldWidth = true)
         ) {
-            if (!isLoading && options.isEmpty()) {
-                DropdownMenuItem(
-                    text = { Text("Aucun résultat") },
-                    onClick = { expanded = false },
-                    enabled = false
-                )
-            } else {
-                options.forEach { vendor ->
-                    DropdownMenuItem(
-                        text = { Text(vendor.name) },
-                        onClick = {
-                            onSelected(vendor.name)
-                            closeImeAndClearFocus()
+            Surface(
+                shape = RoundedCornerShape(14.dp),
+                tonalElevation = 6.dp,
+                shadowElevation = 10.dp,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .heightIn(max = 320.dp)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    if (!isLoading && options.isEmpty()) {
+                        DropdownMenuItem(
+                            text = { Text("Aucun résultat") },
+                            onClick = { expanded = false },
+                            enabled = false
+                        )
+                    } else {
+                        options.forEach { vendor ->
+                            val isSelected = vendor.name == vendorText
+
+                            DropdownMenuItem(
+                                text = { Text(vendor.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
+                                onClick = {
+                                    onSelected(vendor.name)
+                                    closeImeAndClearFocus()
+                                },
+                                trailingIcon = {
+                                    if (isSelected) {
+                                        Icon(Icons.Filled.Check, contentDescription = null)
+                                    }
+                                }
+                            )
                         }
-                    )
+                    }
                 }
             }
         }
@@ -830,26 +859,48 @@ fun ManufacturerPicker(
 
         ExposedDropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false }
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.exposedDropdownSize(matchTextFieldWidth = true)
         ) {
-            if (!isLoading && options.isEmpty()) {
-                DropdownMenuItem(
-                    text = { Text("Aucun résultat") },
-                    onClick = { expanded = false },
-                    enabled = false
-                )
-            } else {
-                options.forEach { manuf ->
-                    DropdownMenuItem(
-                        text = { Text(manuf.name) },
-                        onClick = {
-                            onSelected(manuf.name)
-                            closeImeAndClearFocus()
+            Surface(
+                shape = RoundedCornerShape(14.dp),
+                tonalElevation = 6.dp,
+                shadowElevation = 10.dp,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .heightIn(max = 320.dp)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    if (!isLoading && options.isEmpty()) {
+                        DropdownMenuItem(
+                            text = { Text("Aucun résultat") },
+                            onClick = { expanded = false },
+                            enabled = false
+                        )
+                    } else {
+                        options.forEach { manuf ->
+                            val isSelected = manuf.name == manufacturerText
+
+                            DropdownMenuItem(
+                                text = { Text(manuf.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
+                                onClick = {
+                                    onSelected(manuf.name)
+                                    closeImeAndClearFocus()
+                                },
+                                trailingIcon = {
+                                    if (isSelected) {
+                                        Icon(Icons.Filled.Check, contentDescription = null)
+                                    }
+                                }
+                            )
                         }
-                    )
+                    }
                 }
             }
         }
+
         LaunchedEffect(suppressFocusOnce) {
             if (suppressFocusOnce) {
                 withFrameNanos { }
@@ -865,3 +916,4 @@ fun ManufacturerPicker(
         }
     }
 }
+

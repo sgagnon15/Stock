@@ -41,6 +41,8 @@ data class ItemDetailUiState(
     val manufacturerOptions: List<ManufUi> = emptyList()
 )
 
+data class ManufUi(val name: String)
+
 class ItemDetailViewModel(app: Application) : AndroidViewModel(app) {
 
     private val settingsStore = StockSettingsStore(app)
@@ -166,8 +168,8 @@ class ItemDetailViewModel(app: Application) : AndroidViewModel(app) {
             uiState.value = uiState.value.copy(isVendorLoading = true)
 
             val rows = repository.loadVendors(
-                page = 1,
-                nbItems = 10
+                nbItems = 9999,
+                pageNumber = 1
             )
 
             uiState.value = uiState.value.copy(
@@ -179,20 +181,27 @@ class ItemDetailViewModel(app: Application) : AndroidViewModel(app) {
 
     fun refreshManufacturers(pageNumber: Int) {
         viewModelScope.launch {
-            uiState.update { it.copy(isManufacturerLoading = true) }
-            try {
-                val list = repository.fetchManufacturers(
-                    nbItems = 10,
-                    pageNumber = pageNumber
-                )
+            uiState.update { it.copy(isManufacturerLoading = true, error = null) }
+
+            runCatching {
+                repository.fetchManufacturers(nbItems = 9999, pageNumber = pageNumber)
+            }.onSuccess { names ->
                 uiState.update {
                     it.copy(
-                        manufacturerOptions = list,
+                        manufacturerOptions = names.map { name ->
+                            ManufUi(name = name)
+                        },
                         isManufacturerLoading = false
                     )
                 }
-            } catch (e: Exception) {
-                uiState.update { it.copy(isManufacturerLoading = false) }
+            }.onFailure { e ->
+                android.util.Log.e("MANUF", "refreshManufacturers failed", e)
+                uiState.update {
+                    it.copy(
+                        isManufacturerLoading = false,
+                        error = e.message ?: "Erreur manufList"
+                    )
+                }
             }
         }
     }

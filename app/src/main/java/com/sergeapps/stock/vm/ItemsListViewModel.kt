@@ -17,15 +17,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.CancellationException
 
-data class ManufDto(
-    val pagenumber: String?,
-    val description: String?
-)
-
-data class ManufUi(
-    val name: String
-)
-
 data class ItemsListUiState(
     val isLoading: Boolean = false,
     val error: String? = null,
@@ -132,9 +123,5 @@ class ItemsListViewModel(app: Application) : AndroidViewModel(app) {
         val prev = (uiState.value.page - 1).coerceAtLeast(1)
         uiState.value = uiState.value.copy(page = prev)
         refresh()
-    }
-
-    private fun ManufDto.toUi(): ManufUi {
-        return ManufUi(name = description.orEmpty())
     }
 }
