@@ -7,8 +7,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.sergeapps.stock.ui.HomeScreen
-import com.sergeapps.stock.ui.ItemDetailScreen
-import com.sergeapps.stock.ui.ItemsListScreen
+import com.sergeapps.stock.ui.item.ItemDetailScreen
+import com.sergeapps.stock.ui.item.ItemsListScreen
 import com.sergeapps.stock.ui.SettingsScreen
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*

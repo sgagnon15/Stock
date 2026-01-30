@@ -1,4 +1,4 @@
-package com.sergeapps.stock.data
+package com.sergeapps.stock.data.item
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

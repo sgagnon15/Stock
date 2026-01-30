@@ -1,5 +1,8 @@
 package com.sergeapps.stock.data
 
+import com.sergeapps.stock.data.item.DeletePictureResponseDto
+import com.sergeapps.stock.data.item.ManufDto
+import com.sergeapps.stock.data.item.UploadPicResponseDto
 import retrofit2.http.GET
 import retrofit2.http.Query
 import okhttp3.MultipartBody
@@ -15,7 +18,7 @@ interface StockApiService {
     suspend fun getItemList(
         @Query("pagenumber") pageNumber: Int = 1,
         @Query("orderby") orderBy: String = "description",
-        @Query("nbitems") nbItems: Int = 6,
+        @Query("nbitems") nbItems: Int = 15,
         @Query("filter") filter: String? = null
     ): List<ItemListDto>
 

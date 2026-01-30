@@ -2,6 +2,8 @@ package com.sergeapps.stock.data
 
 import android.content.Context
 import android.net.Uri
+import com.sergeapps.stock.data.item.DeletePictureResponseDto
+import com.sergeapps.stock.data.item.UploadPicResponseDto
 import com.sergeapps.stock.util.MultipartUtils
 
 

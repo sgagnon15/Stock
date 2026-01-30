@@ -1,4 +1,4 @@
-package com.sergeapps.stock.ui
+package com.sergeapps.stock.ui.item
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -51,7 +51,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
-import com.sergeapps.stock.vm.ItemDetailViewModel
+import com.sergeapps.stock.vm.item.ItemDetailViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import coil.request.CachePolicy
@@ -68,7 +68,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExposedDropdownMenuBox
 import com.sergeapps.stock.data.ItemDetailDto
-import com.sergeapps.stock.vm.VendorUi
+import com.sergeapps.stock.vm.item.VendorUi
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -78,7 +78,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.graphics.SolidColor
-import com.sergeapps.stock.vm.ManufUi
+import com.sergeapps.stock.vm.item.ManufUi
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.material.icons.filled.Check

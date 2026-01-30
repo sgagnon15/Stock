@@ -1,4 +1,4 @@
-package com.sergeapps.stock.vm
+package com.sergeapps.stock.vm.item
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

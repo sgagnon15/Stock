@@ -1,4 +1,4 @@
-package com.sergeapps.stock.ui
+package com.sergeapps.stock.ui.item
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,11 +20,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.sergeapps.stock.vm.ItemsListViewModel
+import com.sergeapps.stock.vm.item.ItemsListViewModel
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import coil.compose.AsyncImage
 
@@ -36,6 +40,25 @@ fun ItemsListScreen(
     viewModel: ItemsListViewModel = viewModel()
 ) {
     val state by viewModel.state.collectAsState()
+    val listState = rememberLazyListState()
+
+
+    val shouldLoadMore = remember {
+        derivedStateOf {
+            val visibleItems = listState.layoutInfo.visibleItemsInfo
+            val lastVisibleIndex = visibleItems.lastOrNull()?.index ?: 0
+            val totalItems = listState.layoutInfo.totalItemsCount
+
+            val threshold = 3 // charge quand il reste 3 items
+            lastVisibleIndex >= (totalItems - 1 - threshold)
+        }
+    }
+
+    LaunchedEffect(shouldLoadMore.value) {
+        if (shouldLoadMore.value) {
+            viewModel.loadMore()
+        }
+    }
 
    LaunchedEffect(Unit) {
         viewModel.refresh()
@@ -44,12 +67,7 @@ fun ItemsListScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Articles") },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Text("←")
-                    }
-                }
+                title = { Text("Articles") }
             )
         }
     ) { padding ->
@@ -86,26 +104,24 @@ fun ItemsListScreen(
                 }
             )
 
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Button(onClick = { viewModel.prevPage() }, enabled = state.page > 1) { Text("◀") }
-                Text("Page ${state.page} / ${state.totalPages}")
-                Button(onClick = { viewModel.nextPage() }, enabled = state.page < state.totalPages) { Text("▶") }
-                Button(onClick = { viewModel.refresh() }) { Text("Rafraîchir") }
-            }
-
             if (state.isLoading) {
                 Text("Chargement…")
             } else if (state.error != null) {
                 Text("Erreur: ${state.error}")
                 Text("Va dans Paramètres pour configurer URL/Port/Clé d'API.")
             } else {
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    val listVersion = remember(state.items) { System.currentTimeMillis() }
+                val listVersion = remember(state.items) { System.currentTimeMillis() }
 
-                    state.items.forEach { row ->
+                LazyColumn(
+                    state = listState,
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(bottom = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(
+                        items = state.items,
+                        key = { it.id }
+                    ) { row ->
                         ItemRow(
                             itemId = row.id,
                             itemNumber = row.itemNumber,
@@ -116,6 +132,22 @@ fun ItemsListScreen(
                             listVersion = listVersion,
                             onClick = onOpenItem
                         )
+                    }
+
+                    // Footer "Charger plus"
+                    item {
+                        if (state.isLoadingMore) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                CircularProgressIndicator()
+                            }
+                        } else {
+                            Spacer(modifier = Modifier.height(8.dp))
+                        }
                     }
                 }
             }
